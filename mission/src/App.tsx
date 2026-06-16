@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { HashRouter, Routes, Route } from 'react-router-dom'
 import Layout from './components/layout/Layout'
 import HomePage from './pages/home/HomePage'
 import TeamsPage from './pages/teams/TeamsPage'
@@ -10,7 +10,7 @@ import AdminPage from './pages/admin/AdminPage'
 
 export default function App() {
   return (
-    <BrowserRouter basename="/mission">
+    <HashRouter>
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
@@ -22,6 +22,6 @@ export default function App() {
           <Route path="/admin" element={<AdminPage />} />
         </Routes>
       </Layout>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
