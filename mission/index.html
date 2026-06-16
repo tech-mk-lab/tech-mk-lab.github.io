@@ -5,8 +5,20 @@
     <link rel="icon" type="image/svg+xml" href="/mission/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>mission-app</title>
-    <script type="module" crossorigin src="/mission/assets/index-Cj93HKNb.js"></script>
-    <link rel="stylesheet" crossorigin href="/mission/assets/index-q7mjIped.css">
+    <script>
+      // Restore path encoded by 404.html redirect
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var p = params.get('p');
+        if (p) {
+          var q = params.get('q');
+          var path = '/mission' + p.replace(/~and~/g, '&') + (q ? '?' + q.replace(/~and~/g, '&') : '') + window.location.hash;
+          window.history.replaceState(null, '', path);
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/mission/assets/index-DP-PRtK8.js"></script>
+    <link rel="stylesheet" crossorigin href="/mission/assets/index-Duh-W2La.css">
   </head>
   <body>
     <div id="root"></div>
