@@ -24,9 +24,8 @@ export default function MissionsPage() {
     <div className="space-y-4">
       <div>
         <h2 className="text-lg font-bold text-gray-900">미션 목록</h2>
-        <p className="text-sm text-gray-400">
-          {unlockedCount}개 공개 · 최대 {totalPoints}점 획득 가능
-        </p>
+        <p className="text-sm text-gray-400">{unlockedCount}개 공개 · 최대 {totalPoints}점 획득 가능</p>
+        <p className="text-sm text-gray-400">※ 1등 상품: 반차 (연차 0.5일)</p>
       </div>
 
       <div className="space-y-3">
