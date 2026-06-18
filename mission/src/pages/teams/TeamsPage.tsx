@@ -1,4 +1,3 @@
-import { mockMissions } from '../../data/mockData'
 import { useTeams } from '../../hooks/useTeams'
 import { useRanking } from '../../hooks/useRanking'
 import LoadingSpinner from '../../components/ui/LoadingSpinner'
@@ -23,7 +22,7 @@ export default function TeamsPage() {
       <div className="space-y-3">
         {teams.map((team) => {
           const rankEntry = ranking.find((r) => r.teamId === team.id)
-          const completed = mockMissions.filter((m) => m.completedBy.includes(team.id)).length
+          const completed = rankEntry?.completedMissions ?? 0
           const scorePercent = Math.round((team.score / maxScore) * 100)
 
           return (

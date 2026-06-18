@@ -12,6 +12,7 @@ const rankBg = [
   'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200',
   'bg-gradient-to-r from-orange-50 to-amber-50 border-orange-200',
 ]
+const podiumHeights: Record<number, string> = { 1: 'h-28', 2: 'h-20', 3: 'h-16' }
 
 function formatTime(date: Date) {
   return date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', second: '2-digit' })
@@ -29,8 +30,15 @@ export default function RankingPage() {
   if (loading) return <LoadingSpinner />
   if (error) return <ErrorMessage message={error} onRetry={refetch} />
 
-  const ranking = [...rawRanking].sort((a, b) => b.score - a.score)
-  const maxScore = Math.max(...ranking.map((r) => r.score), 1)
+  const sorted = [...rawRanking].sort((a, b) => b.score - a.score)
+  const maxScore = Math.max(...sorted.map((r) => r.score), 1)
+
+  // 동점 처리: 같은 점수 → 같은 순위 (표준 경쟁 순위: 1,1,3...)
+  const ranking = sorted.map((entry, _, arr) => {
+    const rank = arr.findIndex((e) => e.score === entry.score) + 1
+    const tied = arr.filter((e) => e.score === entry.score).length > 1
+    return { ...entry, rank, tied }
+  })
 
   return (
     <div className="space-y-4">
@@ -64,12 +72,11 @@ export default function RankingPage() {
           {[ranking[1], ranking[0], ranking[2]].map((entry, i) => {
             if (!entry) return <div key={i} />
             const team = teams.find((t) => t.id === entry.teamId)
-            const heights = ['h-20', 'h-28', 'h-16']
-            const displayRanks = [2, 1, 3]
+            const height = podiumHeights[entry.rank] ?? 'h-16'
 
             return (
               <div key={entry.teamId} className="flex flex-col items-center gap-1">
-                <span className="text-2xl">{medals[displayRanks[i] - 1]}</span>
+                <span className="text-2xl">{medals[entry.rank - 1]}</span>
                 <p className="text-xs font-bold text-gray-700 text-center leading-tight">
                   {entry.teamName}
                 </p>
@@ -77,10 +84,12 @@ export default function RankingPage() {
                   {entry.score}점
                 </p>
                 <div
-                  className={`w-full rounded-t-lg ${heights[i]} flex items-end justify-center pb-2`}
+                  className={`w-full rounded-t-lg ${height} flex items-end justify-center pb-2`}
                   style={{ backgroundColor: `${team?.color}30`, border: `2px solid ${team?.color}50` }}
                 >
-                  <span className="text-xs font-bold text-gray-500">{displayRanks[i]}위</span>
+                  <span className="text-xs font-bold text-gray-500">
+                    {entry.tied ? `공동 ${entry.rank}위` : `${entry.rank}위`}
+                  </span>
                 </div>
               </div>
             )
@@ -126,6 +135,9 @@ export default function RankingPage() {
                 </div>
 
                 <div className="text-right flex-shrink-0">
+                  {entry.tied && (
+                    <p className="text-xs font-medium text-orange-500">공동 {entry.rank}위</p>
+                  )}
                   <p className="text-lg font-black" style={{ color: team?.color }}>
                     {entry.score}
                   </p>
